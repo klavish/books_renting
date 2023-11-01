@@ -3,6 +3,12 @@
 $nameErr = $emailErr = $phoneErr = $passwordErr = $genderErr = $imageErr = "";
 $name = $email = $phone = $password = $insert_data = $profile = "";
 
+$sql = "select * from user_reg";
+$result = $con->query($sql);
+foreach($result as $val){
+    $val['email'];
+    $val['password'];
+}
 
 function clean($data){
     $data = trim($data);//remove whitespace from both sides
@@ -68,10 +74,8 @@ function validateGender(&$data){
 
 function validateImage(&$data){
     $allowed_types = array("jpg", "jpeg", "png");
-    $file_type = strtolower(pathinfo($_FILES['profile']['name'],PATHINFO_EXTENSION));
-    if(empty($_FILES['profile'])){
-        return "Image is required";
-    }elseif(!in_array($file_type, $allowed_types)){
+    $extension  = strtolower(pathinfo($_FILES['profile']['name'])['extension']);
+    if(!in_array($extension, $allowed_types)){
         return "Only JPG, JPEG, PNG files are allowed";
     }
 }
@@ -120,19 +124,23 @@ if(isset($_POST['register'])){
             $gender = $_POST['gender'],
             $profile = $_FILES['profile']
         ];
-        $path = 'uploads/';
-        $extension = strtolower(pathinfo($_FILES['profile']['name'],PATHINFO_EXTENSION));
-        $file_name = pathinfo($_FILES['profile']['name'])['filename'] . "." . $extension;
-        $unique_name = uniqid() . "." . $extension;
+        $path = '../uploads/';
+        $extension  = strtolower(pathinfo($_FILES['profile']['name'])['extension']);
+        $file_name = pathinfo($_FILES['profile']['name'])['filename'] . "." . $extension ;
+        $unique_name  = uniqid() . "." .  $extension;
         $profile = (file_exists($_FILES['profile']['tmp_name']))? $file_name:null;
         $date_created = date('Y-m-d H:i:s');
         $sql1 = "insert into user_reg(name,email,phone,password,gender) values('$name','$email','$phone','$password','$gender')";
         $sql2 ="insert into img_file(userId,unique_name,display_name,date_created,date_modified) values((SELECT userId from user_reg where email ='$email'),'$unique_name','$file_name','$date_created','$date_created')";
+       
+        // echo $sql1;
+        // echo $sql2;
         if($con->query($sql1) === true && $con->query($sql2) === true){
             if(!is_null($profile)){
                 move_uploaded_file($_FILES['profile']['tmp_name'],  $path.$unique_name);
             }
-        }else{
+        }
+        else{
             echo "Something went wrong!";
             header("refresh:3;url:register.php");
         }

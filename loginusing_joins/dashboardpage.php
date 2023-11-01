@@ -66,10 +66,10 @@ if(!isset($_SESSION['userlogin_data'])){
                 <li><?php echo $user->email;?></li>
                 <li><?php echo $user->phone;?></li>
                 <li><?php echo $user->gender;?></li>
-                <li><img class="w-12 h-14 rounded-md" src="<?php echo 'uploads/'.$user->unique_name; ?>"/></li>
+                <li><img class="w-12 h-14 rounded-md" src="<?php echo '../uploads/'.$user->unique_name; ?>"/></li>
                 <li><?php echo $user->date_created;?></li>
                 <li><?php echo $user->date_modified;?></li>
-                <div class="mb-2">
+                <div class="mt-2">
                 <a class="border bg-blue-800 text-white text-sm  px-4 py-2 rounded-md" href="update.php?userId=<?php echo $user->userId;?>">edit</a>
                 <a class="border bg-blue-800 text-white text-sm  px-4 py-2 rounded-md" href="delete.php?userId=<?php echo $user->userId;?>">delete</a>
                 </div>
