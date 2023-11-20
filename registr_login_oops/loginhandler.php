@@ -7,7 +7,7 @@ require_once 'database.php';
 
 if (isset($_POST['login'])) {
     $validate = new UserValidate($_POST);
-    $validate->validateLoginData(); 
+    $errors = $validate->validateLoginData();
     if(empty($errors)){    
        
         $email = $_POST['email'];
@@ -15,11 +15,19 @@ if (isset($_POST['login'])) {
         $ob = new Database();
         $ob->sql("select * from user_register where email='{$email}'");
         $res = $ob->getResult();
-        print_r($res);
-        $_SESSION['loginUser'] = $res;
-        header("Location:dasboard.php");
+        foreach($res as $key=> $val){
+            $val['email'];
+            $val['password'];
         }
-        exit;
+        $_SESSION['loginUser'] = $_POST;
+        if($_SESSION['loginUser']['email'] == $val['email'] && $_SESSION['loginUser']['password'] == $val['password']){
+            $_SESSION['loginUser'] = $res;
+            header("Location:dasboard.php");
+        }
+        else{
+            echo "Details not matched";
+        }
+    }
     }
     
 ?>

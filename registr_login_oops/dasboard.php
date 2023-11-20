@@ -2,7 +2,7 @@
 require_once 'loginhandler.php';
 require_once 'database.php';
 if(!isset($_SESSION['loginUser'])){
-    header('location:logedinform.php');
+    header('location:login.php');
 }
 
 ?> 

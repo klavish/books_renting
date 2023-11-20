@@ -17,12 +17,12 @@
         $this->validatePassword();
         $this->validateGender();
         $this->validateProfile();
+        $this->duplicateData();
        
-
         return $this->errors;
     }
 
-    private function clean(&$data)
+    private function clean($data)
     {
         $data = trim($data);
         $data = stripslashes($data);
@@ -49,6 +49,7 @@
     {
         $email = $this->data['email'];
         //$email = $this->clean($uemail);
+        $this->duplicateData();
         if (empty($email)) {
             $this->addError('email', 'Email is required.');
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -73,6 +74,7 @@
     private function validatePassword(){
         $password = $this->data['password'];
         //$password = clean($upassword);
+        $this->duplicateData();
         if(empty($password)){
             $this->addError('password',"Password cannnot be empty");
         }
@@ -95,38 +97,66 @@
 
     private function validateProfile() {
     if (!isset($_FILES['profile'])) {
-        return "Profile picture is required.";
+        $this->addError('profile',"Profile picture is required.");
     }
 
     $profile = $_FILES['profile'];
 
     if ($profile['error'] !== UPLOAD_ERR_OK) {
-        return "Error uploading profile picture.";
+        $this->addError('profile', "Error uploading profile picture.");
     }
 
     $allowed_types = array("jpg", "jpeg", "png");
     $extension = strtolower(pathinfo($profile['name'], PATHINFO_EXTENSION));
 
     if (!in_array($extension, $allowed_types)) {
-        return "Only JPG, JPEG, PNG files are allowed.";
+       $this->addError('profile', "Only JPG, JPEG, PNG files are allowed.");
     }
     return null;  // Return null if validation passes
 }
 
 
-    private function addError($key, $message)
+
+public function validateLoginData()
+{
+    $this->validateEmail();
+    $this->validatePassword();
+    return $this->errors;
+}
+
+private function duplicateData(){
+    $useremail = $this->data['email'];
+    $db = new Database();
+    $red_email = $db->selectId("select email from user_register where email = '$useremail'");
+    if($red_email) {
+        $this->addError('email', "This email has already taken");    
+            
+    }
+    $userpass = $this->data['password'];
+    $red_pass = $db->selectId("select password from user_register where password = '$userpass'");
+    if($red_pass) {
+        $this->addError('password', "This password has already taken");    
+            
+    }
+}
+    
+
+public function validupdateForm()
+{
+    $this->validateName();
+    $this->validateEmail();
+    $this->validatePhone();
+    $this->validatePassword();
+    $this->validateGender();
+    $this->validateProfile();
+   
+    return $this->errors;
+}
+
+private function addError($key, $message)
     {
         $this->errors[$key] = $message;
     }
-
-
-    public function validateLoginData()
-    {
-        $this->validateEmail();
-        $this->validatePassword();
-        return $this->errors;
-    }
-   
 
 
 }

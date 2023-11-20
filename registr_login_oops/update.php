@@ -2,6 +2,7 @@
 
 require 'updatehandler.php';
 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

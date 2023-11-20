@@ -1,19 +1,21 @@
 <?php
-
-//require_once 'validations.php';
-//include_once 'database.php';
+session_start();
+require_once 'validations.php';
+include_once 'database.php';
 require_once 'user.php';
 
 #handle update form
 if(isset($_POST['update'])){
-    $validation = new UserValidate($_POST);
-     $errors = $validation->validForm();
-     if(empty($errors)){
-     $user=new User();
-     $errors = $user->updateUser($_POST);
-     }
+    print_r($loguser = $_SESSION['loginUser']['userId']);
+    echo "This is session userid ".$loguser;
+    echo "this is post id ".$_POST['Id'];
+    // $validation = new UserValidate($_POST);
+    //  $errors = $validation->validupdateForm();
+    //  if(empty($errors)){
+    //  $user=new User();
+    //  $user->updateUser($_POST);
+    // }
 }
-
 
 if(isset($_GET['userId'])){
     $uid =  $_GET['userId'];
@@ -26,6 +28,7 @@ if(isset($_GET['userId'])){
   
 }else{
     header('location:dasboard.php');
+    
 }
 
 
